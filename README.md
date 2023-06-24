@@ -10,7 +10,7 @@ pip install Django
 Setup project
 
 inside the djbootstrap folder run this command
-django-admin startproject <project name here>
+django-admin startproject (project name here)
 
 
 
