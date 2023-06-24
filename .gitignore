@@ -161,4 +161,5 @@ cython_debug/
 
 #my stuff
 .vscode
-migrations
+migrations/
+mysite/
