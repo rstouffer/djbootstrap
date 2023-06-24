@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>welcome</title>
+    </head>
+
+    <body>
+        <h1>Welcome</h1>
+
+        <h3>
+            Username: {{ username }}<br>
+            Email: {{ email }}
+        </h3>
+
+        <br>
+
+        <form action="/changeinfo" method="get">
+            <input type="submit" value="Change Info">
+        </form>
+        <br>
+        <form action="/logout" method="get">
+            <input type="submit" value="Log Out">
+        </form>
+    </body>
+</html>

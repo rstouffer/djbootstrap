@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SignUp</title>
+    </head>
+
+    <body>
+        <form action="/signup" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="fieldWrapper">
+                    {{ field.label_tag }} {{ field }} {{ field.errors }}
+                </div>
+            {% endfor %}
+            <input type="submit" value="Submit">
+        </form>
+        <br><br>
+        <form action="/logout" method="get">
+            <input type="submit" value="Go Back">
+        </form>
+    </body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Type Your Email
+        </title>
+    </head>
+
+    <body>
+        <h1>
+            Type Your Email
+        </h1>
+
+        <form action="/forgotpassword" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="fieldWrapper">
+                    {{ field.errors }}
+                    {{ field.label_tag }} {{ field }}
+                </div>
+            {% endfor %}
+            <input type="submit" value="Submit">
+        </form>
+    </body>
+</html>
