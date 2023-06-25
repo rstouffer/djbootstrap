@@ -2,8 +2,8 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
-from polls.forms import SignupForm, LoginForm, ChangeInfo, SetUsername, SetPassword
-from polls.models import GUID, ForgotMyPassword, ExtraInfo
+from djbootstrap.forms import SignupForm, LoginForm, ChangeInfo, SetUsername, SetPassword
+from djbootstrap.models import GUID, ForgotMyPassword, ExtraInfo
 import uuid
 
 def index(request):

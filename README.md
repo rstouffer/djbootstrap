@@ -16,7 +16,7 @@ django-admin startproject (project name here)
 
 now inside the settings.py file in the project folder add the following to the installed_apps list
     'django.contrib.staticfiles',
-    'polls.apps.PollsConfig',
+    'polls.apps.DjbootstrapConfig',
     'phone_field',
     'localflavor',
 
@@ -24,4 +24,4 @@ now under the timezone vareable write your timezone ex: 'America/New_York'
 
 under urlpatterns in urls write
 
-path("", include('polls.urls')),
+path("", include('djbootstrap.urls')),
