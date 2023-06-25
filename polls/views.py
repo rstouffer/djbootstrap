@@ -65,12 +65,24 @@ def welcome(request):
     
     user = request.user
 
-    return render(request, "welcome.html", {"username": user.username, "email": user.email})
+    try:
+        GUID.objects.get(user=user)
+        warning = True
+    except GUID.DoesNotExist:
+        warning = False
+
+    return render(request, "welcome.html", {"username": user.username, "email": user.email, "warning": warning})
 
 def changeInfo(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/")
     
+    try:
+        GUID.objects.get(user=request.user)
+        return HttpResponseRedirect("/welcome")
+    except GUID.DoesNotExist:
+        pass
+
     user = request.user
     
     if request.method == "POST":
@@ -103,7 +115,12 @@ def changeInfo(request):
             if form.cleaned_data["phone"] != "":
                 user.phone = form.cleaned_data["phone"]
             user.save()
-            return HttpResponseRedirect("/logout")
+
+            guid = GUID(user=user, guid=uuid.uuid4().hex)
+            guid.save()
+
+            print(guid.guid)
+            return render(request, "verifyEmail.html")
     else:
         form = ChangeInfo()
 
