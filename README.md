@@ -19,6 +19,9 @@ now inside the settings.py file in the project folder add the following to the i
     'phone_field',
     'localflavor',
 
+also write this at the end
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 now under the timezone vareable write your timezone ex: 'America/New_York'
 
 under urlpatterns in urls write

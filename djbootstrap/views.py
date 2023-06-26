@@ -1,14 +1,17 @@
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login, logout
-from djbootstrap.forms import SignupForm, LoginForm, ChangeInfo, SetUsername, SetPassword
+from django.contrib.auth import authenticate, login
+from djbootstrap.forms import SignupForm, LoginForm, SetUsername, SetPassword
 from djbootstrap.models import GUID, ForgotMyPassword, ExtraInfo
+from djbootstrap.emailAuth import authenicate_email
 import uuid
 
-def index(request):
+from djbootstrap.viewsAuth import welcome, changeInfo, logout_page, delete_account
+
+def index(request): 
     if request.user.is_authenticated:
-        HttpResponseRedirect("/welcome")
+        return HttpResponseRedirect("/welcome")
 
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -52,89 +55,15 @@ def signup(request):
             guid = GUID(user=user, guid=uuid.uuid4().hex)
             guid.save()
 
-            print(guid.guid)
-            return render(request, "verifyEmail.html")
+            return authenicate_email(request, guid.guid)
     else:
         form = SignupForm()
 
     return render(request, "signup.html", {"form": form})
 
-def welcome(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect("/")
-    
-    user = request.user
-
-    try:
-        GUID.objects.get(user=user)
-        warning = True
-    except GUID.DoesNotExist:
-        warning = False
-
-    return render(request, "welcome.html", {"username": user.username, "email": user.email, "warning": warning})
-
-def changeInfo(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect("/")
-    
-    try:
-        GUID.objects.get(user=request.user)
-        return HttpResponseRedirect("/welcome")
-    except GUID.DoesNotExist:
-        pass
-
-    user = request.user
-    
-    if request.method == "POST":
-        form = ChangeInfo(request.POST)
-
-        if form.is_valid() and authenticate(username=user.username, password=form.cleaned_data["prevPassword"]) == user:
-            if form.cleaned_data["username"] != "":
-                user.username = form.cleaned_data["username"]
-            if form.cleaned_data["email"] != "":
-                user.email = form.cleaned_data["email"]
-            if form.cleaned_data["newPassword"] != "":
-                user.set_password(form.cleaned_data["newPassword"])
-
-            if form.cleaned_data["first_name"] != "":
-                user.first_name = form.cleaned_data["first_name"]
-            if form.cleaned_data["last_name"] != "":
-                user.last_name = form.cleaned_data["last_name"]
-            if form.cleaned_data["company_name"] != "":
-                user.company_name = form.cleaned_data["company_name"]
-            if form.cleaned_data["address_l1"] != "":
-                user.address_l1 = form.cleaned_data["address_l1"]
-            if form.cleaned_data["address_l2"] != "":
-                user.address_l2 = form.cleaned_data["address_l2"]
-            if form.cleaned_data["city"] != "":
-                user.city = form.cleaned_data["city"]
-            if form.cleaned_data["state"] != "":
-                user.state = form.cleaned_data["state"]
-            if form.cleaned_data["zip_code"] != "":
-                user.zip_code = form.cleaned_data["zip_code"]
-            if form.cleaned_data["phone"] != "":
-                user.phone = form.cleaned_data["phone"]
-            user.save()
-
-            guid = GUID(user=user, guid=uuid.uuid4().hex)
-            guid.save()
-
-            print(guid.guid)
-            return render(request, "verifyEmail.html")
-    else:
-        form = ChangeInfo()
-
-    return render(request, "changeInfo.html", {"form": form})
-
-def logout_page(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect("/")
-    
-    logout(request)
-    return HttpResponseRedirect("/")
-
 def verify_page(request, id):
     guid = GUID.objects.get(guid=id)
+    guid.user.is_active = True
     login(request, guid.user, backend='django.contrib.auth.backends.ModelBackend')
     guid.delete()
     return HttpResponseRedirect("/welcome")
@@ -148,9 +77,8 @@ def forgot_my_password_start(request):
 
             forgot = ForgotMyPassword(guid=uuid.uuid4().hex, user=user)
             forgot.save()
-            print(forgot.guid)
-
-            return render(request, "verifyEmail.html")
+            
+            return authenicate_email(request, forgot.guid)
     else:
         form = SetUsername()
         
@@ -171,13 +99,3 @@ def forgot_my_password_end(request, id):
         form = SetPassword()
         
     return render(request, "getPassword.html", {"id": id, "form": form})
-
-def delete_account(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect("/")
-    
-    if request.method == "POST":
-        request.user.delete()
-        return HttpResponseRedirect("/")
-    
-    return render(request, "deleteAccount.html")
