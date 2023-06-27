@@ -12,4 +12,6 @@ urlpatterns = [
     path('signup/<id>/', views.verify_page),
     path('forgotpassword', views.forgot_my_password_start),
     path('forgotpassword/<id>/', views.forgot_my_password_end),
+    path('setemail', views.setEmail_start),
+    path('setemail/<id>/', views.setEmail_end),
 ]

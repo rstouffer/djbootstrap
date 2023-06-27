@@ -31,9 +31,16 @@
 
         <br>
 
-        <form action="/changeinfo" method="get">
-            <input type="submit" value="Change Info">
-        </form>
+        {% if warning %}
+            <form action="/setemail" method="get">
+                <input type="submit" value="Set new email">
+            </form>
+        {% else %}
+            <form action="/changeinfo" method="get">
+                <input type="submit" value="Change Info">
+            </form>
+        {% endif %}
+        
         <br>
         <form action="/logout" method="get">
             <input type="submit" value="Log Out">

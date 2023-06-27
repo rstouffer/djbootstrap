@@ -1,9 +1,10 @@
+import time
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth import authenticate, logout
-from djbootstrap.forms import ChangeInfo
+from djbootstrap.forms import ChangeInfo, SetEmail
 from djbootstrap.models import GUID
-from djbootstrap.emailAuth import authenicate_email
+from djbootstrap.emailAuth import authenticate_email
 import uuid
 
 def welcome(request):
@@ -63,10 +64,10 @@ def changeInfo(request):
                 user.phone = form.cleaned_data["phone"]
             user.save()
 
-            guid = GUID(user=user, guid=uuid.uuid4().hex)
+            guid = GUID(user=user, guid=uuid.uuid4().hex, time=time.time())
             guid.save()
 
-            authenicate_email(request, guid.guid)
+            authenticate_email(request, guid.guid)
     else:
         form = ChangeInfo()
 
@@ -78,6 +79,43 @@ def logout_page(request):
     
     logout(request)
     return HttpResponseRedirect("/")
+
+def setEmail_start(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+    
+    if (request.method == "POST"):
+        form = SetEmail(request.POST)
+
+        if form.is_valid():
+            request.user.email = form.cleaned_data['email']
+            request.user.save()
+
+            if form.is_valid():
+                try:
+                    GUID.objects.get(user=request.user).delete()
+                except GUID.DoesNotExist:
+                    pass
+
+                forgot = GUID(guid=uuid.uuid4().hex, user=request.user, time = time.time())
+                forgot.save()
+                
+                return authenticate_email(request, forgot.guid)
+    else:
+        form = SetEmail()
+    
+    return render(request, "getEmail2.html", {"form": form})
+
+def setEmail_end(request, id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+    
+    guid = GUID.objects.get(guid=id)
+
+    if (time.time() - guid.time <= 3600):
+        guid.delete()
+    
+    return HttpResponseRedirect("/welcome")
 
 def delete_account(request):
     if not request.user.is_authenticated:

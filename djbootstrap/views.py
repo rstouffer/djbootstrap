@@ -3,11 +3,11 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from djbootstrap.forms import SignupForm, LoginForm, SetUsername, SetPassword
-from djbootstrap.models import GUID, ForgotMyPassword, ExtraInfo
-from djbootstrap.emailAuth import authenicate_email
-import uuid
+from djbootstrap.models import GUID, ExtraInfo
+from djbootstrap.emailAuth import authenticate_email
+import uuid, time
 
-from djbootstrap.viewsAuth import welcome, changeInfo, logout_page, delete_account
+from djbootstrap.viewsAuth import welcome, changeInfo, logout_page, delete_account, setEmail_start, setEmail_end
 
 def index(request): 
     if request.user.is_authenticated:
@@ -52,10 +52,10 @@ def signup(request):
             )
             extraData.save()
 
-            guid = GUID(user=user, guid=uuid.uuid4().hex)
+            guid = GUID(user=user, guid=uuid.uuid4().hex, time=time.time())
             guid.save()
 
-            return authenicate_email(request, guid.guid)
+            return authenticate_email(request, guid.guid)
     else:
         form = SignupForm()
 
@@ -63,9 +63,11 @@ def signup(request):
 
 def verify_page(request, id):
     guid = GUID.objects.get(guid=id)
-    guid.user.is_active = True
     login(request, guid.user, backend='django.contrib.auth.backends.ModelBackend')
-    guid.delete()
+
+    if (time.time() - guid.time <= 3600):
+        guid.delete()
+
     return HttpResponseRedirect("/welcome")
 
 def forgot_my_password_start(request):
@@ -75,10 +77,10 @@ def forgot_my_password_start(request):
         if form.is_valid():
             user = User.objects.get(username=form.cleaned_data["username"])
 
-            forgot = ForgotMyPassword(guid=uuid.uuid4().hex, user=user)
+            forgot = GUID(guid=uuid.uuid4().hex, user=user, time = time.time())
             forgot.save()
             
-            return authenicate_email(request, forgot.guid)
+            return authenticate_email(request, forgot.guid)
     else:
         form = SetUsername()
         
@@ -88,11 +90,12 @@ def forgot_my_password_end(request, id):
     if (request.method == "POST"):
         form = SetPassword(request.POST)
         if form.is_valid():
-            forgot = ForgotMyPassword.objects.get(guid=id)
+            forgot = GUID.objects.get(guid=id)
             login(request, forgot.user, backend='django.contrib.auth.backends.ModelBackend')
-            forgot.user.set_password(form.cleaned_data["password"])
-            forgot.user.save()
-            forgot.delete()
+            if (time.time() - forgot.time <= 3600):
+                forgot.user.set_password(form.cleaned_data["password"])
+                forgot.user.save()
+                forgot.delete()
             
             return HttpResponseRedirect("/welcome")
     else:

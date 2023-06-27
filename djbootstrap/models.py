@@ -8,14 +8,7 @@ from phone_field import PhoneField
 class GUID(models.Model):
     guid = models.CharField(primary_key=True, max_length=100)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-
-    def __str__(self):
-        return self.user.username
-    
-
-class ForgotMyPassword(models.Model):
-    guid = models.CharField(primary_key=True, max_length=100)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    time = models.FloatField()
 
     def __str__(self):
         return self.user.username

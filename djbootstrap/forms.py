@@ -94,3 +94,10 @@ class SetPassword(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['password'].widget.attrs['autocomplete'] = 'off'
+
+class SetEmail(forms.Form):
+    email = forms.EmailField(max_length=100)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs['autocomplete'] = 'off'
