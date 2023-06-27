@@ -55,7 +55,7 @@ def signup(request):
             guid = GUID(user=user, guid=uuid.uuid4().hex, time=time.time())
             guid.save()
 
-            return authenticate_email(request, guid.guid)
+            return authenticate_email(request, "signup", guid.guid, user)
     else:
         form = SignupForm()
 
@@ -80,7 +80,7 @@ def forgot_my_password_start(request):
             forgot = GUID(guid=uuid.uuid4().hex, user=user, time = time.time())
             forgot.save()
             
-            return authenticate_email(request, forgot.guid)
+            return authenticate_email(request, "forgotpassword", forgot.guid, user)
     else:
         form = SetUsername()
         

@@ -20,7 +20,12 @@ now inside the settings.py file in the project folder add the following to the i
     'localflavor',
 
 also write this at the end
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'youremail@gmail.com'
+EMAIL_HOST_PASSWORD = 'password'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 now under the timezone vareable write your timezone ex: 'America/New_York'
 

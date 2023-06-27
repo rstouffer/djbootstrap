@@ -67,7 +67,7 @@ def changeInfo(request):
             guid = GUID(user=user, guid=uuid.uuid4().hex, time=time.time())
             guid.save()
 
-            authenticate_email(request, guid.guid)
+            return authenticate_email(request, "changeinfo", guid.guid, user)
     else:
         form = ChangeInfo()
 
@@ -100,7 +100,7 @@ def setEmail_start(request):
                 forgot = GUID(guid=uuid.uuid4().hex, user=request.user, time = time.time())
                 forgot.save()
                 
-                return authenticate_email(request, forgot.guid)
+                return authenticate_email(request, "setemail", forgot.guid, request.user)
     else:
         form = SetEmail()
     
