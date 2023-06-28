@@ -14,6 +14,7 @@ DATABASE_URL=sqlite:///db.sqlite3
 
 TIME_ZONE=your timezone, ex: America/New_York
 
+EMAIL_BACKEND=the email backend ex: django.core.mail.backends.smtp.EmailBackend
 EMAIL_HOST=ex: smtp.gmail.com
 EMAIL_HOST_USER=your host email
 EMAIL_HOST_PASSWORD=your host password
