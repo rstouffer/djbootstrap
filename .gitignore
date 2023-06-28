@@ -163,4 +163,6 @@ cython_debug/
 .vscode
 migrations/
 mysite/
+virtualenv/
 manage.py
+secret_key.txt
