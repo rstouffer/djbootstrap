@@ -2,19 +2,25 @@
 
 Setup project:
 
-this is just the app, so you will have to create the project yourself as well as create a virtual environment
+be sure to install a python virtual environment and install all of the requirements in requirements.txt
 
-be sure to put this in the installed apps in settings.py
-    'djbootstrap.apps.DjbootstrapConfig',
-    'phone_field',
-    'localflavor',
+also you need to create a  .env file
 
-also write this at the end
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'youremail@gmail.com'
-EMAIL_HOST_PASSWORD = 'password'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+in the .env file write the fallowing
 
-now under the timezone vareable write your timezone ex: 'America/New_York'
+SECRET_KEY= your secret key
+DEBUG=True
+DATABASE_URL=sqlite:///db.sqlite3
+
+TIME_ZONE=your timezone, ex: America/New_York
+
+EMAIL_HOST=ex: smtp.gmail.com
+EMAIL_HOST_USER=your host email
+EMAIL_HOST_PASSWORD=your host password
+EMAIL_PORT=your port
+EMAIL_USE_TLS=True
+
+
+
+To run simply run the command
+python manage.py runserver

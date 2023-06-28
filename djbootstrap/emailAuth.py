@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from mysite.settings import EMAIL_HOST_USER
+from sites.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 
