@@ -7,7 +7,7 @@ from djbootstrap.models import GUID, ExtraInfo
 from djbootstrap.emailAuth import authenticate_email
 import uuid, time
 
-from djbootstrap.viewsAuth import welcome, changeInfo, logout_page, delete_account, setEmail_start, setEmail_end
+from djbootstrap.viewsAuth import *
 
 def index(request): 
     if request.user.is_authenticated:

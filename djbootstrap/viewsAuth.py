@@ -126,3 +126,6 @@ def delete_account(request):
         return HttpResponseRedirect("/")
     
     return render(request, "deleteAccount.html")
+
+
+__all__ = ["welcome", "changeInfo", "logout_page", "delete_account", "setEmail_start", "setEmail_end"]
